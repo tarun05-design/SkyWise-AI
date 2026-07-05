@@ -1082,14 +1082,14 @@ def render_input_form(encoders: dict) -> dict:
     airline_codes = sorted(encoders["Marketing_Airline_Network"].classes_.tolist()) if encoders else ["AA", "DL", "UA", "WN"]
 
     # --- Quick-start route chips ---
-    st.markdown('<div class="section-label">⚡ Quick start</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-label">Quick start</div>', unsafe_allow_html=True)
     chip_cols = st.columns(len(PRESETS))
     for col, name in zip(chip_cols, PRESETS.keys()):
         col.button(name, key=f"preset_{name}", on_click=apply_preset, args=(name,), use_container_width=True)
     st.write("")
 
     tab_date, tab_route, tab_schedule, tab_advanced = st.tabs(
-        ["📅 Date & Airline", "📍 Route", "🕐 Schedule", "⚙️ Advanced"]
+        ["Date & Airline", "Route", "Schedule", "Advanced"]
     )
 
     # ---- Tab: Date & Airline ----
@@ -1123,17 +1123,17 @@ def render_input_form(encoders: dict) -> dict:
                 origin_index = origin_codes.index(origin_default) if origin_default in origin_codes else 0
                 origin = st.selectbox("Origin airport", origin_codes, index=origin_index, key="sel_origin")
                 o_city, o_state, o_state_name = airport_lookup(origin)
-                st.caption(f"📌 {o_city}")
+                st.caption(f":material/location_on: {o_city}")
             with c_swap:
                 st.write("")
                 st.write("")
-                st.button("⇄", key="swap_btn", on_click=swap_route, help="Swap origin and destination")
+                st.button("", key="swap_btn", on_click=swap_route, help="Swap origin and destination", icon=":material/swap_horiz:")
             with c2:
                 dest_default = st.session_state.get("sel_dest", "FLL")
                 dest_index = dest_codes.index(dest_default) if dest_default in dest_codes else 0
                 dest = st.selectbox("Destination airport", dest_codes, index=dest_index, key="sel_dest")
                 d_city, d_state, d_state_name = airport_lookup(dest)
-                st.caption(f"📌 {d_city}")
+                st.caption(f":material/location_on: {d_city}")
 
     # ---- Tab: Schedule ----
     with tab_schedule:
@@ -1151,7 +1151,7 @@ def render_input_form(encoders: dict) -> dict:
                 "Scheduled duration (min)", min_value=15, max_value=900,
                 value=st.session_state.get("num_elapsed", auto_elapsed or 110), step=1, key="num_elapsed",
             )
-            c1.caption(f"⏱ From your times: {auto_elapsed} min")
+            c1.caption(f":material/timer: From your times: {auto_elapsed} min")
             distance = c2.number_input(
                 "Distance (miles)", min_value=30, max_value=6000,
                 value=st.session_state.get("num_distance", 581), step=1, key="num_distance",
@@ -1317,11 +1317,11 @@ def render_boarding_pass(inputs: dict, prediction=None):
 # UI — SIDEBAR
 # ---------------------------------------------------------------------------
 NAV_ITEMS = [
-    ("predict", "✈️", "Predict"),
-    ("select_model", "🧠", "Select model"),
-    ("comparison", "📊", "Model comparison"),
-    ("explore_data", "🗂️", "Explore data"),
-    ("about", "ℹ️", "About"),
+    ("predict", ":material/flight_takeoff:", "Predict"),
+    ("select_model", ":material/psychology:", "Select model"),
+    ("comparison", ":material/query_stats:", "Model comparison"),
+    ("explore_data", ":material/database:", "Explore data"),
+    ("about", ":material/info:", "About"),
 ]
 
 
@@ -1329,7 +1329,7 @@ def render_sidebar() -> str:
     with st.sidebar:
         st.markdown(
             f'''<div class="brand-wrap">
-                <div class="brand-mark">🎫 {PROJECT_NAME}<span class="dot">.</span></div>
+                <div class="brand-mark">✈︎ {PROJECT_NAME}<span class="dot">.</span></div>
                 <div class="brand-tagline">{PROJECT_TAGLINE}</div>
             </div>''',
             unsafe_allow_html=True,
@@ -1341,7 +1341,7 @@ def render_sidebar() -> str:
         for key, icon, label in NAV_ITEMS:
             is_active = st.session_state["nav_page"] == key
             if st.button(
-                f"{icon}  {label}", key=f"nav_{key}", use_container_width=True,
+                label, icon=icon, key=f"nav_{key}", use_container_width=True,
                 type="primary" if is_active else "secondary",
             ):
                 st.session_state["nav_page"] = key
@@ -1373,7 +1373,7 @@ def render_predict_page(models: dict, encoders: dict):
     with col_form:
         raw_inputs = render_input_form(encoders)
         st.markdown('<div class="predict-btn">', unsafe_allow_html=True)
-        predict_clicked = st.button("🔮  Predict Delay Risk", use_container_width=True)
+        predict_clicked = st.button("Predict Delay Risk", icon=":material/insights:", use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col_pass:
@@ -1431,7 +1431,7 @@ def render_model_select_page(models: dict):
 
                 is_active = st.session_state.get("active_model", "XGBoost") == name
                 if is_active:
-                    st.success("Active on the Predict tab", icon="✅")
+                    st.success("Active on the Predict tab", icon=":material/check_circle:")
                 else:
                     if st.button(f"Use {name}", key=f"use_{name}", use_container_width=True):
                         st.session_state["active_model"] = name
