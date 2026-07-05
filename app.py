@@ -1421,8 +1421,8 @@ def render_predict_page(models: dict, encoders: dict):
     )
     st.markdown(
         '<div class="app-footer">'
-        '<div class="footer-credit">Designed &amp; built by <strong>Tarun P</strong>'
-        '<span class="footer-plane">✈</span>SkyWise AI</div>'
+        '<div class="footer-credit">SkyWise AI<span class="footer-plane">·</span>'
+        'Designed &amp; built by <strong>Tarun P</strong></div>'
         '</div>',
         unsafe_allow_html=True,
     )
