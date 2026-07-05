@@ -456,17 +456,6 @@ def inject_custom_css() -> None:
         """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&display=swap');
-
-        .material-symbols-outlined {
-            font-family: 'Material Symbols Outlined';
-            font-weight: normal;
-            font-style: normal;
-            font-size: 1.1rem;
-            line-height: 1;
-            vertical-align: -3px;
-            display: inline-block;
-        }
 
         :root {
             --bg-deep: #0b1226;
@@ -902,31 +891,6 @@ def inject_custom_css() -> None:
         div[data-testid="stDecoration"] { display: none; }
         div[data-testid="stToolbar"] { display: none; }
         .stApp { margin-top: 0 !important; }
-
-        /* ---------- Comparison page: itinerary/analysis + model cards ---------- */
-        .cmp-info-card {
-            min-height: 130px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .cmp-model-card {
-            min-height: 180px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        /* ---------- Mobile tightening ---------- */
-        @media (max-width: 640px) {
-            .block-container { padding-left: 0.9rem; padding-right: 0.9rem; }
-            .glass-card { padding: 0.9rem 1rem 0.8rem 1rem; }
-            .cmp-info-card, .cmp-model-card { min-height: auto !important; }
-            .app-title { font-size: 1.5rem !important; }
-            .app-subtitle { font-size: 0.85rem !important; margin-bottom: 1rem !important; }
-            .bp-code { font-size: 1.4rem !important; }
-            .bp-plane { font-size: 1rem !important; }
-        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -1543,16 +1507,16 @@ def render_comparison_page(models: dict, encoders: dict):
                 )
 
         # Top row: two columns
-        col_l, col_r = st.columns([1, 1.2], gap="medium")
+        col_l, col_r = st.columns(2, gap="medium")
         
         with col_l:
             st.markdown(
-                f'<div class="glass-card cmp-info-card" style="margin-bottom:0; padding:1.1rem;">'
+                f'<div class="glass-card" style="margin-bottom:0; padding:1.1rem; min-height:130px; display:flex; flex-direction:column; justify-content:center;">'
                 f'<div class="bp-eyebrow" style="font-size:0.62rem; letter-spacing:0.1em; margin-bottom:0.25rem;">Flight Itinerary</div>'
                 f'<div class="bp-route" style="margin:0; justify-content:space-between; align-items:center;">'
                 f'<div><span class="bp-code" style="font-size:1.35rem;">{inputs["Origin"]}</span><span style="font-size:0.72rem; color:var(--text-mid); margin-left:0.35rem;">{inputs["OriginCityName"]}</span></div>'
                 f'<div style="color:var(--gold); font-size:1rem; display:flex; align-items:center;">✈︎</div>'
-                f'<div><span style="font-size:0.72rem; color:var(--text-mid); margin-right:0.35rem;">{inputs["DestCityName"]}</span><span class="bp-code" style="font-size:1.35rem;">{inputs["Dest"]}</span></div>'
+                f'<div><span class="bp-code" style="font-size:1.35rem;">{inputs["Dest"]}</span><span style="font-size:0.72rem; color:var(--text-mid); margin-left:0.35rem;">{inputs["DestCityName"]}</span></div>'
                 f'</div>'
                 f'<div class="bp-field-value" style="font-size:0.8rem; color:var(--text-lo); margin-top:0.25rem; font-family:\'JetBrains Mono\', monospace;">'
                 f'{inputs["Marketing_Airline_Network"]} {inputs["Flight_Number_Marketing_Airline"]} · {inputs["Year"]}-{inputs["Month"]:02d}-{inputs["DayofMonth"]:02d}</div>'
@@ -1562,7 +1526,7 @@ def render_comparison_page(models: dict, encoders: dict):
             
         with col_r:
             st.markdown(
-                f'<div class="glass-card cmp-info-card" style="margin-bottom:0; padding:1.1rem;">'
+                f'<div class="glass-card" style="margin-bottom:0; padding:1.1rem; min-height:130px; display:flex; flex-direction:column; justify-content:center;">'
                 f'<div style="font-size:0.62rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.15rem;">Comparative Analysis</div>'
                 f'<div style="font-size:1.15rem; color:{status_color}; font-weight:700; text-transform:uppercase; display:flex; align-items:center; gap:0.25rem;">'
                 f'{icon_text} {status_text}</div>'
@@ -1585,7 +1549,7 @@ def render_comparison_page(models: dict, encoders: dict):
             
             with col:
                 st.markdown(
-                    f'<div class="glass-card cmp-model-card" style="border-top: 2px solid {accent_color}; padding:1.1rem;">'
+                    f'<div class="glass-card" style="border-top: 2px solid {accent_color}; padding:1.1rem; min-height: 180px; display: flex; flex-direction: column; justify-content: space-between;">'
                     
                     f'<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">'
                     f'<div class="model-chip" style="background:{accent_color}; color:#000; font-weight:600; margin:0; font-size:0.65rem; padding:0.15rem 0.5rem;">{name}</div>'
@@ -1705,13 +1669,13 @@ def render_about_page():
         st.markdown(
             f'<div class="glass-card" style="min-height: 420px; display: flex; flex-direction: column; justify-content: space-between;">'
             f'<div>'
-            f'<div class="section-label" style="color:var(--gold); font-size:1.05rem; margin-bottom:0.6rem;"><span class="material-symbols-outlined">flight_takeoff</span> Overview</div>'
+            f'<div class="section-label" style="color:var(--gold); font-size:1.05rem; margin-bottom:0.6rem;">:material/flight_takeoff: Overview</div>'
             f'<div style="color:var(--text-hi); font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem;">'
             f'<strong>{PROJECT_NAME}</strong> estimates the probability that a U.S. domestic flight '
             f'will arrive 15+ minutes late. By analyzing key trip metrics directly from a scheduled itinerary, '
             f'it provides passengers with a predictive delay risk assessment before departure.'
             f'</div>'
-            f'<div class="section-label" style="color:var(--teal); font-size:1.05rem; margin-bottom:0.6rem;"><span class="material-symbols-outlined">settings_suggest</span> Predictive Engine</div>'
+            f'<div class="section-label" style="color:var(--teal); font-size:1.05rem; margin-bottom:0.6rem;">:material/settings_suggest: Predictive Engine</div>'
             f'<div style="color:var(--text-hi); font-size:0.9rem; line-height:1.6;">'
             f'The system integrates two advanced gradient-boosted classifiers: <strong>XGBoost</strong> and '
             f'<strong>LightGBM</strong>. Both are trained on historical flight performance records. Categorical variables '
@@ -1727,7 +1691,7 @@ def render_about_page():
         st.markdown(
             f'<div class="glass-card" style="min-height: 420px; display: flex; flex-direction: column; justify-content: space-between;">'
             f'<div>'
-            f'<div class="section-label" style="color:var(--coral); font-size:1.05rem; margin-bottom:0.6rem;"><span class="material-symbols-outlined">warning</span> Scope & Limitations</div>'
+            f'<div class="section-label" style="color:var(--coral); font-size:1.05rem; margin-bottom:0.6rem;">:material/warning: Scope & Limitations</div>'
             f'<div style="color:var(--text-hi); font-size:0.9rem; line-height:1.6; margin-bottom:1.2rem;">'
             f'Predictions reflect historical patterns and standard scheduled schedules. They do not account for '
             f'live operating conditions such as weather disruptions, sudden mechanical delays, air traffic control '
