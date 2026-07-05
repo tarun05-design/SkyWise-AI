@@ -1502,12 +1502,12 @@ def render_comparison_page(models: dict, encoders: dict):
             xg_verdict = 1 if xg_proba[1] >= 0.5 else 0
             lg_verdict = 1 if lg_proba[1] >= 0.5 else 0
             
-            st.markdown('<div class="glass-card">', unsafe_allow_html=True)
             if xg_verdict == lg_verdict:
                 status_color = "var(--teal)" if xg_verdict == 0 else "var(--coral)"
                 status_text = "Low Risk of Delay" if xg_verdict == 0 else "High Risk of Delay"
                 icon_text = "✓" if xg_verdict == 0 else "⚠"
-                st.markdown(
+                header_html = (
+                    f'<div class="glass-card">'
                     f'<div style="text-align:center; font-family:\'Space Grotesk\', sans-serif;">'
                     f'<div style="font-size:0.75rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem;">Comparative Analysis</div>'
                     f'<div style="font-size:1.35rem; color:{status_color}; font-weight:700; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:0.4rem;">'
@@ -1516,11 +1516,12 @@ def render_comparison_page(models: dict, encoders: dict):
                     f'Both models agree on the delay risk for this itinerary. XGBoost predicts '
                     f'<strong>{xg_proba[xg_verdict]*100:.1f}%</strong> confidence, and LightGBM predicts '
                     f'<strong>{lg_proba[lg_verdict]*100:.1f}%</strong> confidence.</div>'
-                    f'</div>',
-                    unsafe_allow_html=True
+                    f'</div>'
+                    f'</div>'
                 )
             else:
-                st.markdown(
+                header_html = (
+                    f'<div class="glass-card">'
                     f'<div style="text-align:center; font-family:\'Space Grotesk\', sans-serif;">'
                     f'<div style="font-size:0.75rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem;">Comparative Analysis</div>'
                     f'<div style="font-size:1.35rem; color:var(--gold); font-weight:700; text-transform:uppercase;">⚠ Models Disagree</div>'
@@ -1528,10 +1529,10 @@ def render_comparison_page(models: dict, encoders: dict):
                     f'XGBoost predicts a <strong>{"Delay" if xg_verdict == 1 else "On Time"}</strong> (confidence: {xg_proba[xg_verdict]*100:.1f}%), '
                     f'while LightGBM predicts an <strong>{"Delay" if lg_verdict == 1 else "On-time"}</strong> (confidence: {lg_proba[lg_verdict]*100:.1f}%).'
                     f'</div>'
-                    f'</div>',
-                    unsafe_allow_html=True
+                    f'</div>'
+                    f'</div>'
                 )
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown(header_html, unsafe_allow_html=True)
 
         cols = st.columns(2, gap="medium")
         for col, (name, proba) in zip(cols, results.items()):
