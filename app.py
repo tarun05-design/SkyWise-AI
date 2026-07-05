@@ -902,6 +902,31 @@ def inject_custom_css() -> None:
         div[data-testid="stDecoration"] { display: none; }
         div[data-testid="stToolbar"] { display: none; }
         .stApp { margin-top: 0 !important; }
+
+        /* ---------- Comparison page: itinerary/analysis + model cards ---------- */
+        .cmp-info-card {
+            min-height: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .cmp-model-card {
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* ---------- Mobile tightening ---------- */
+        @media (max-width: 640px) {
+            .block-container { padding-left: 0.9rem; padding-right: 0.9rem; }
+            .glass-card { padding: 0.9rem 1rem 0.8rem 1rem; }
+            .cmp-info-card, .cmp-model-card { min-height: auto !important; }
+            .app-title { font-size: 1.5rem !important; }
+            .app-subtitle { font-size: 0.85rem !important; margin-bottom: 1rem !important; }
+            .bp-code { font-size: 1.4rem !important; }
+            .bp-plane { font-size: 1rem !important; }
+        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -1522,7 +1547,7 @@ def render_comparison_page(models: dict, encoders: dict):
         
         with col_l:
             st.markdown(
-                f'<div class="glass-card" style="margin-bottom:0; padding:1.1rem; min-height:130px; display:flex; flex-direction:column; justify-content:center;">'
+                f'<div class="glass-card cmp-info-card" style="margin-bottom:0; padding:1.1rem;">'
                 f'<div class="bp-eyebrow" style="font-size:0.62rem; letter-spacing:0.1em; margin-bottom:0.25rem;">Flight Itinerary</div>'
                 f'<div class="bp-route" style="margin:0; justify-content:space-between; align-items:center;">'
                 f'<div><span class="bp-code" style="font-size:1.35rem;">{inputs["Origin"]}</span><span style="font-size:0.72rem; color:var(--text-mid); margin-left:0.35rem;">{inputs["OriginCityName"]}</span></div>'
@@ -1537,7 +1562,7 @@ def render_comparison_page(models: dict, encoders: dict):
             
         with col_r:
             st.markdown(
-                f'<div class="glass-card" style="margin-bottom:0; padding:1.1rem; min-height:130px; display:flex; flex-direction:column; justify-content:center;">'
+                f'<div class="glass-card cmp-info-card" style="margin-bottom:0; padding:1.1rem;">'
                 f'<div style="font-size:0.62rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.15rem;">Comparative Analysis</div>'
                 f'<div style="font-size:1.15rem; color:{status_color}; font-weight:700; text-transform:uppercase; display:flex; align-items:center; gap:0.25rem;">'
                 f'{icon_text} {status_text}</div>'
@@ -1560,7 +1585,7 @@ def render_comparison_page(models: dict, encoders: dict):
             
             with col:
                 st.markdown(
-                    f'<div class="glass-card" style="border-top: 2px solid {accent_color}; padding:1.1rem; min-height: 180px; display: flex; flex-direction: column; justify-content: space-between;">'
+                    f'<div class="glass-card cmp-model-card" style="border-top: 2px solid {accent_color}; padding:1.1rem;">'
                     
                     f'<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">'
                     f'<div class="model-chip" style="background:{accent_color}; color:#000; font-weight:600; margin:0; font-size:0.65rem; padding:0.15rem 0.5rem;">{name}</div>'
