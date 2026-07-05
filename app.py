@@ -1667,15 +1667,15 @@ def render_about_page():
     
     with col1:
         st.markdown(
-            f'<div class="glass-card" style="min-height: 420px; display: flex; flex-direction: column; justify-content: space-between;">'
+            f'<div class="glass-card" style="min-height: 420px; display: flex; flex-direction: column;">'
             f'<div>'
-            f'<div class="section-label" style="color:var(--gold); font-size:1.05rem; margin-bottom:0.6rem;">:material/flight_takeoff: Overview</div>'
+            f'<div class="section-label" style="color:var(--gold); font-size:1.05rem; margin-bottom:0.6rem;">✈ Overview</div>'
             f'<div style="color:var(--text-hi); font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem;">'
             f'<strong>{PROJECT_NAME}</strong> estimates the probability that a U.S. domestic flight '
             f'will arrive 15+ minutes late. By analyzing key trip metrics directly from a scheduled itinerary, '
             f'it provides passengers with a predictive delay risk assessment before departure.'
             f'</div>'
-            f'<div class="section-label" style="color:var(--teal); font-size:1.05rem; margin-bottom:0.6rem;">:material/settings_suggest: Predictive Engine</div>'
+            f'<div class="section-label" style="color:var(--teal); font-size:1.05rem; margin-bottom:0.6rem;">⚙ Predictive Engine</div>'
             f'<div style="color:var(--text-hi); font-size:0.9rem; line-height:1.6;">'
             f'The system integrates two advanced gradient-boosted classifiers: <strong>XGBoost</strong> and '
             f'<strong>LightGBM</strong>. Both are trained on historical flight performance records. Categorical variables '
@@ -1689,9 +1689,9 @@ def render_about_page():
         
     with col2:
         st.markdown(
-            f'<div class="glass-card" style="min-height: 420px; display: flex; flex-direction: column; justify-content: space-between;">'
+            f'<div class="glass-card" style="min-height: 420px; display: flex; flex-direction: column;">'
             f'<div>'
-            f'<div class="section-label" style="color:var(--coral); font-size:1.05rem; margin-bottom:0.6rem;">:material/warning: Scope & Limitations</div>'
+            f'<div class="section-label" style="color:var(--coral); font-size:1.05rem; margin-bottom:0.6rem;">⚠ Scope & Limitations</div>'
             f'<div style="color:var(--text-hi); font-size:0.9rem; line-height:1.6; margin-bottom:1.2rem;">'
             f'Predictions reflect historical patterns and standard scheduled schedules. They do not account for '
             f'live operating conditions such as weather disruptions, sudden mechanical delays, air traffic control '
