@@ -456,6 +456,17 @@ def inject_custom_css() -> None:
         """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&display=swap');
+
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 1.1rem;
+            line-height: 1;
+            vertical-align: -3px;
+            display: inline-block;
+        }
 
         :root {
             --bg-deep: #0b1226;
@@ -1460,24 +1471,6 @@ def render_comparison_page(models: dict, encoders: dict):
 
     inputs = current_trip_inputs(encoders)
 
-    col_l, col_c, col_r = st.columns([1, 2, 1])
-    with col_c:
-        st.markdown(
-            f'<div class="glass-card" style="text-align:center;">'
-            f'<div class="bp-eyebrow" style="margin-bottom:0.4rem;">Comparing Itinerary</div>'
-            f'<div class="bp-route" style="justify-content:center; gap:2.5rem; margin-bottom:0.6rem;">'
-            f'<div><div class="bp-code">{inputs["Origin"]}</div><div class="bp-city">{inputs["OriginCityName"]}</div></div>'
-            f'<div class="bp-plane" style="transform:none; font-size:1.5rem; display:flex; align-items:center;">✈︎</div>'
-            f'<div><div class="bp-code">{inputs["Dest"]}</div><div class="bp-city">{inputs["DestCityName"]}</div></div>'
-            f'</div>'
-            f'<div class="bp-field-label">Flight Details</div>'
-            f'<div class="bp-field-value" style="font-size:0.95rem; color:var(--text-hi);">'
-            f'{inputs["Marketing_Airline_Network"]} {inputs["Flight_Number_Marketing_Airline"]} · '
-            f'{inputs["Year"]}-{inputs["Month"]:02d}-{inputs["DayofMonth"]:02d}</div>'
-            f'</div>',
-            unsafe_allow_html=True,
-        )
-
     feature_order_cache = {}
     results = {}
     errors = []
@@ -1498,6 +1491,11 @@ def render_comparison_page(models: dict, encoders: dict):
         xg_proba = results.get("XGBoost")
         lg_proba = results.get("LightGBM")
         
+        status_color = "var(--teal)"
+        status_text = "Low Risk of Delay"
+        icon_text = "✓"
+        analysis_text = ""
+        
         if xg_proba is not None and lg_proba is not None:
             xg_verdict = 1 if xg_proba[1] >= 0.5 else 0
             lg_verdict = 1 if lg_proba[1] >= 0.5 else 0
@@ -1506,33 +1504,50 @@ def render_comparison_page(models: dict, encoders: dict):
                 status_color = "var(--teal)" if xg_verdict == 0 else "var(--coral)"
                 status_text = "Low Risk of Delay" if xg_verdict == 0 else "High Risk of Delay"
                 icon_text = "✓" if xg_verdict == 0 else "⚠"
-                header_html = (
-                    f'<div class="glass-card">'
-                    f'<div style="text-align:center; font-family:\'Space Grotesk\', sans-serif;">'
-                    f'<div style="font-size:0.75rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem;">Comparative Analysis</div>'
-                    f'<div style="font-size:1.35rem; color:{status_color}; font-weight:700; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:0.4rem;">'
-                    f'{icon_text} {status_text}</div>'
-                    f'<div style="font-size:0.9rem; color:var(--text-mid); margin-top:0.4rem; max-width:600px; margin-left:auto; margin-right:auto;">'
-                    f'Both models agree on the delay risk for this itinerary. XGBoost predicts '
-                    f'<strong>{xg_proba[xg_verdict]*100:.1f}%</strong> confidence, and LightGBM predicts '
-                    f'<strong>{lg_proba[lg_verdict]*100:.1f}%</strong> confidence.</div>'
-                    f'</div>'
-                    f'</div>'
+                analysis_text = (
+                    f'Both models agree on the delay risk. XGBoost predicts <strong>{xg_proba[xg_verdict]*100:.1f}%</strong> confidence, '
+                    f'and LightGBM predicts <strong>{lg_proba[lg_verdict]*100:.1f}%</strong> confidence.'
                 )
             else:
-                header_html = (
-                    f'<div class="glass-card">'
-                    f'<div style="text-align:center; font-family:\'Space Grotesk\', sans-serif;">'
-                    f'<div style="font-size:0.75rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem;">Comparative Analysis</div>'
-                    f'<div style="font-size:1.35rem; color:var(--gold); font-weight:700; text-transform:uppercase;">⚠ Models Disagree</div>'
-                    f'<div style="font-size:0.9rem; color:var(--text-mid); margin-top:0.4rem; max-width:600px; margin-left:auto; margin-right:auto;">'
-                    f'XGBoost predicts a <strong>{"Delay" if xg_verdict == 1 else "On Time"}</strong> (confidence: {xg_proba[xg_verdict]*100:.1f}%), '
-                    f'while LightGBM predicts an <strong>{"Delay" if lg_verdict == 1 else "On-time"}</strong> (confidence: {lg_proba[lg_verdict]*100:.1f}%).'
-                    f'</div>'
-                    f'</div>'
-                    f'</div>'
+                status_color = "var(--gold)"
+                status_text = "Models Disagree"
+                icon_text = "⚠"
+                analysis_text = (
+                    f'XGBoost predicts a <strong>{"Delay" if xg_verdict == 1 else "On Time"}</strong> ({xg_proba[xg_verdict]*100:.1f}%), '
+                    f'while LightGBM predicts an <strong>{"Delay" if lg_verdict == 1 else "On-time"}</strong> ({lg_proba[lg_verdict]*100:.1f}%).'
                 )
-            st.markdown(header_html, unsafe_allow_html=True)
+
+        # Top row: two columns
+        col_l, col_r = st.columns([1, 1.2], gap="medium")
+        
+        with col_l:
+            st.markdown(
+                f'<div class="glass-card" style="margin-bottom:0; padding:1.1rem; min-height:130px; display:flex; flex-direction:column; justify-content:center;">'
+                f'<div class="bp-eyebrow" style="font-size:0.62rem; letter-spacing:0.1em; margin-bottom:0.25rem;">Flight Itinerary</div>'
+                f'<div class="bp-route" style="margin:0; justify-content:space-between; align-items:center;">'
+                f'<div><span class="bp-code" style="font-size:1.35rem;">{inputs["Origin"]}</span><span style="font-size:0.72rem; color:var(--text-mid); margin-left:0.35rem;">{inputs["OriginCityName"]}</span></div>'
+                f'<div style="color:var(--gold); font-size:1rem; display:flex; align-items:center;">✈︎</div>'
+                f'<div><span style="font-size:0.72rem; color:var(--text-mid); margin-right:0.35rem;">{inputs["DestCityName"]}</span><span class="bp-code" style="font-size:1.35rem;">{inputs["Dest"]}</span></div>'
+                f'</div>'
+                f'<div class="bp-field-value" style="font-size:0.8rem; color:var(--text-lo); margin-top:0.25rem; font-family:\'JetBrains Mono\', monospace;">'
+                f'{inputs["Marketing_Airline_Network"]} {inputs["Flight_Number_Marketing_Airline"]} · {inputs["Year"]}-{inputs["Month"]:02d}-{inputs["DayofMonth"]:02d}</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+            
+        with col_r:
+            st.markdown(
+                f'<div class="glass-card" style="margin-bottom:0; padding:1.1rem; min-height:130px; display:flex; flex-direction:column; justify-content:center;">'
+                f'<div style="font-size:0.62rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.15rem;">Comparative Analysis</div>'
+                f'<div style="font-size:1.15rem; color:{status_color}; font-weight:700; text-transform:uppercase; display:flex; align-items:center; gap:0.25rem;">'
+                f'{icon_text} {status_text}</div>'
+                f'<div style="font-size:0.8rem; color:var(--text-mid); margin-top:0.2rem; line-height:1.35;">'
+                f'{analysis_text}</div>'
+                f'</div>',
+                unsafe_allow_html=True
+            )
+            
+        st.write("") # Spacer
 
         cols = st.columns(2, gap="medium")
         for col, (name, proba) in zip(cols, results.items()):
@@ -1545,28 +1560,27 @@ def render_comparison_page(models: dict, encoders: dict):
             
             with col:
                 st.markdown(
-                    f'<div class="glass-card" style="border-top: 3px solid {accent_color}; min-height: 295px; display: flex; flex-direction: column; justify-content: space-between;">'
-                    f'<div>'
-                    f'<div class="model-chip" style="background:{accent_color}; color:#000; font-weight:600; margin-bottom:0.5rem;">{name}</div>'
-                    f'<div style="font-size:0.82rem; color:var(--text-lo); margin-bottom:1rem; min-height: 2.2rem; line-height: 1.4;">'
+                    f'<div class="glass-card" style="border-top: 2px solid {accent_color}; padding:1.1rem; min-height: 180px; display: flex; flex-direction: column; justify-content: space-between;">'
+                    
+                    f'<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">'
+                    f'<div class="model-chip" style="background:{accent_color}; color:#000; font-weight:600; margin:0; font-size:0.65rem; padding:0.15rem 0.5rem;">{name}</div>'
+                    f'<div class="stamp {verdict_class}" style="font-size:0.85rem; padding:0.2rem 0.6rem; border-width:1.5px; transform:none; font-weight:600;">'
+                    f'{verdict_symbol} {verdict}</div>'
+                    f'</div>'
+                    
+                    f'<div style="font-size:0.78rem; color:var(--text-lo); margin:0.4rem 0 0.8rem 0; line-height:1.35; min-height:2.2rem;">'
                     f'{MODEL_REGISTRY[name]["blurb"]}</div>'
+                    
+                    f'<div style="display:flex; gap:1.2rem; margin-top:0.2rem;">'
+                    f'<div style="flex:1;">'
+                    f'<div class="prob-label" style="font-size:0.58rem; margin-bottom:2px;">On-time</div>'
+                    f'<div class="prob-bar-track" style="height:5px;"><div class="prob-bar-fill" style="width:{ontime_pct:.1f}%; background: var(--teal);"></div></div>'
+                    f'<div style="font-size:0.85rem; font-weight:700; color:var(--teal); margin-top:2px; font-family:\'JetBrains Mono\', monospace;">{ontime_pct:.1f}%</div>'
                     f'</div>'
-                    
-                    f'<div class="stamp-wrap" style="margin: 0.8rem 0 1.2rem 0;">'
-                    f'<div class="stamp {verdict_class}" style="font-size:1.15rem; padding: 0.35rem 0.9rem; border-width: 2px; transform: rotate(-2deg);">'
-                    f'{verdict_symbol} {verdict}</div></div>'
-                    
-                    f'<div>'
-                    f'<div class="prob-row" style="margin-top:0.4rem;">'
-                    f'<div class="prob-col"><div class="prob-label">On-time Probability</div>'
-                    f'<div class="prob-bar-track"><div class="prob-bar-fill" style="width:{ontime_pct:.1f}%; background: var(--teal);"></div></div>'
-                    f'<div class="prob-pct" style="font-size:0.95rem; font-weight:700; color:var(--teal);">{ontime_pct:.1f}%</div></div>'
-                    f'</div>'
-                    
-                    f'<div class="prob-row" style="margin-top:0.6rem; margin-bottom: 0.2rem;">'
-                    f'<div class="prob-col"><div class="prob-label">Delay Probability</div>'
-                    f'<div class="prob-bar-track"><div class="prob-bar-fill" style="width:{delay_pct:.1f}%; background: var(--coral);"></div></div>'
-                    f'<div class="prob-pct" style="font-size:0.95rem; font-weight:700; color:var(--coral);">{delay_pct:.1f}%</div></div>'
+                    f'<div style="flex:1;">'
+                    f'<div class="prob-label" style="font-size:0.58rem; margin-bottom:2px;">Delay</div>'
+                    f'<div class="prob-bar-track" style="height:5px;"><div class="prob-bar-fill" style="width:{delay_pct:.1f}%; background: var(--coral);"></div></div>'
+                    f'<div style="font-size:0.85rem; font-weight:700; color:var(--coral); margin-top:2px; font-family:\'JetBrains Mono\', monospace;">{delay_pct:.1f}%</div>'
                     f'</div>'
                     f'</div>'
                     
@@ -1666,13 +1680,13 @@ def render_about_page():
         st.markdown(
             f'<div class="glass-card" style="min-height: 420px; display: flex; flex-direction: column; justify-content: space-between;">'
             f'<div>'
-            f'<div class="section-label" style="color:var(--gold); font-size:1.05rem; margin-bottom:0.6rem;">:material/flight_takeoff: Overview</div>'
+            f'<div class="section-label" style="color:var(--gold); font-size:1.05rem; margin-bottom:0.6rem;"><span class="material-symbols-outlined">flight_takeoff</span> Overview</div>'
             f'<div style="color:var(--text-hi); font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem;">'
             f'<strong>{PROJECT_NAME}</strong> estimates the probability that a U.S. domestic flight '
             f'will arrive 15+ minutes late. By analyzing key trip metrics directly from a scheduled itinerary, '
             f'it provides passengers with a predictive delay risk assessment before departure.'
             f'</div>'
-            f'<div class="section-label" style="color:var(--teal); font-size:1.05rem; margin-bottom:0.6rem;">:material/settings_suggest: Predictive Engine</div>'
+            f'<div class="section-label" style="color:var(--teal); font-size:1.05rem; margin-bottom:0.6rem;"><span class="material-symbols-outlined">settings_suggest</span> Predictive Engine</div>'
             f'<div style="color:var(--text-hi); font-size:0.9rem; line-height:1.6;">'
             f'The system integrates two advanced gradient-boosted classifiers: <strong>XGBoost</strong> and '
             f'<strong>LightGBM</strong>. Both are trained on historical flight performance records. Categorical variables '
@@ -1688,7 +1702,7 @@ def render_about_page():
         st.markdown(
             f'<div class="glass-card" style="min-height: 420px; display: flex; flex-direction: column; justify-content: space-between;">'
             f'<div>'
-            f'<div class="section-label" style="color:var(--coral); font-size:1.05rem; margin-bottom:0.6rem;">:material/warning: Scope & Limitations</div>'
+            f'<div class="section-label" style="color:var(--coral); font-size:1.05rem; margin-bottom:0.6rem;"><span class="material-symbols-outlined">warning</span> Scope & Limitations</div>'
             f'<div style="color:var(--text-hi); font-size:0.9rem; line-height:1.6; margin-bottom:1.2rem;">'
             f'Predictions reflect historical patterns and standard scheduled schedules. They do not account for '
             f'live operating conditions such as weather disruptions, sudden mechanical delays, air traffic control '
