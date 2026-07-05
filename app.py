@@ -885,6 +885,30 @@ def inject_custom_css() -> None:
             font-size: 0.78rem;
         }
 
+        .app-footer {
+            text-align: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--panel-border);
+        }
+
+        .app-footer .footer-credit {
+            color: var(--text-mid);
+            font-size: 0.75rem;
+            letter-spacing: 0.04em;
+        }
+
+        .app-footer .footer-credit strong {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .app-footer .footer-plane {
+            display: inline-block;
+            margin: 0 0.4rem;
+            color: var(--teal);
+        }
+
         footer {visibility: hidden;}
         #MainMenu {visibility: hidden;}
         header[data-testid="stHeader"] { display: none; }
@@ -1393,6 +1417,13 @@ def render_predict_page(models: dict, encoders: dict):
     st.markdown(
         '<div class="disclaimer">Predictions are estimates based on historical patterns '
         'and are not a guarantee of actual flight performance.</div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div class="app-footer">'
+        '<div class="footer-credit">Designed &amp; built by <strong>Tarun P</strong>'
+        '<span class="footer-plane">✈</span>SkyWise AI</div>'
+        '</div>',
         unsafe_allow_html=True,
     )
 
