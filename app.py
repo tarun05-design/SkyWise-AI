@@ -1538,7 +1538,7 @@ def render_comparison_page(models: dict, encoders: dict):
                 )
 
         # Top row: two columns
-        col_l, col_r = st.columns(2, gap="medium")
+        col_l, col_r = st.columns([1, 1.2], gap="medium")
         
         with col_l:
             st.markdown(
@@ -1547,7 +1547,7 @@ def render_comparison_page(models: dict, encoders: dict):
                 f'<div class="bp-route" style="margin:0; justify-content:space-between; align-items:center;">'
                 f'<div><span class="bp-code" style="font-size:1.35rem;">{inputs["Origin"]}</span><span style="font-size:0.72rem; color:var(--text-mid); margin-left:0.35rem;">{inputs["OriginCityName"]}</span></div>'
                 f'<div style="color:var(--gold); font-size:1rem; display:flex; align-items:center;">✈︎</div>'
-                f'<div><span class="bp-code" style="font-size:1.35rem;">{inputs["Dest"]}</span><span style="font-size:0.72rem; color:var(--text-mid); margin-left:0.35rem;">{inputs["DestCityName"]}</span></div>'
+                f'<div><span style="font-size:0.72rem; color:var(--text-mid); margin-right:0.35rem;">{inputs["DestCityName"]}</span><span class="bp-code" style="font-size:1.35rem;">{inputs["Dest"]}</span></div>'
                 f'</div>'
                 f'<div class="bp-field-value" style="font-size:0.8rem; color:var(--text-lo); margin-top:0.25rem; font-family:\'JetBrains Mono\', monospace;">'
                 f'{inputs["Marketing_Airline_Network"]} {inputs["Flight_Number_Marketing_Airline"]} · {inputs["Year"]}-{inputs["Month"]:02d}-{inputs["DayofMonth"]:02d}</div>'

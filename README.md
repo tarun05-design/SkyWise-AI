@@ -1,8 +1,10 @@
 # 🎫 SkyWise AI — Flight Delay Predictor (Boarding Pass Edition)
 
-[![Streamlit App](https://static.streamlit.io/badge_github.svg)](https://streamlit.io)
+[![Streamlit App](https://static.streamlit.io/badge_github.svg)](https://skywise-ai.streamlit.app/)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+🌐 **Live Demo:** [https://skywise-ai.streamlit.app/](https://skywise-ai.streamlit.app/)
 
 **SkyWise AI** is a premium Streamlit web application designed to forecast whether a flight will experience an arrival delay of **15 minutes or more**. 
 
