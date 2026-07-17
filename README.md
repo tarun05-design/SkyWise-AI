@@ -1,34 +1,60 @@
 # 🎫 SkyWise AI — Flight Delay Predictor (Boarding Pass Edition)
 
-[![Streamlit App](https://static.streamlit.io/badge_github.svg)](https://skywise-ai.streamlit.app/)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+Forecast flight arrival delays (≥15 mins) from airline operational data and temporal patterns.
 
-🌐 **Live Demo:** [https://skywise-ai.streamlit.app/](https://skywise-ai.streamlit.app/)
+SkyWise AI is a premium Streamlit web application designed to forecast whether a flight will experience an arrival delay. Styled with a dark-mode glassmorphic interface inspired by airline boarding passes, SkyWise AI combines machine learning predictions (XGBoost & LightGBM) with an embedded 369 US airport database and interactive ticket micro-animations.
 
-**SkyWise AI** is a premium Streamlit web application designed to forecast whether a flight will experience an arrival delay of **15 minutes or more**. 
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-skywise--ai.streamlit.app-46E3B7?style=for-the-badge&logo=streamlit&logoColor=black)](https://skywise-ai.streamlit.app/)
 
-Styled with a dark-mode glassmorphic interface inspired by airline boarding passes, SkyWise AI combines machine learning predictions with subtle, satisfying micro-animations to deliver an authentic ticket-checking experience.
+![python](https://img.shields.io/badge/python-3.9+-blue?style=flat) ![streamlit](https://img.shields.io/badge/streamlit-1.32+-red?style=flat) ![model](https://img.shields.io/badge/model-xgboost%20%7C%20lightgbm-orange?style=flat) ![license](https://img.shields.io/badge/license-MIT-green?style=flat)
 
 ---
 
-## ✨ Key Features
+## ⚡ Key Highlights & Business Value
 
-* **Dual-Model Support**: Compare predictions from **XGBoost** (optimized for raw accuracy) and **LightGBM** (optimized for leaf-wise speed) side-by-side.
-* **Authentic Ticket Styling**: The prediction output dynamically generates a boarding pass complete with flight paths, scheduled departure/arrival grids, and an animated delay stamp.
-* **Instant Presets**: Launch predictions in one click with pre-loaded, realistic itineraries (e.g., *ATL → FLL*, *JFK → LAX*, *ORD → DEN*).
-* **Airport Database**: Auto-fills locations and state details for **369 US airports** using an embedded lookup database.
-* **Advanced Options**: Supports overrides for operating airlines and codeshare partners.
+- **Dual Ensemble Model Architecture**: Offers real-time side-by-side inference using **XGBoost** (optimized for deep accuracy) and **LightGBM** (leaf-wise tree split for ultra-fast throughput).
+- **Authentic Boarding Pass Interface**: Dynamically renders flight paths, scheduled departure/arrival times, risk status, and animated delay stamps onto a digital boarding pass.
+- **Built-in US Aviation Database**: Embedded lookup database containing geographical and operational details for **369 US airports** and major operating carriers.
+- **One-Click Test Itineraries**: Includes pre-loaded high-volume flight routes (e.g., *ATL → FLL*, *JFK → LAX*, *ORD → DEN*) for instant evaluation.
 
 ---
 
-## 🛠️ Technology Stack & Requirements
+## 🛠️ Tech Stack & Dependencies
 
-The project uses the following libraries:
-* **UI Framework**: [Streamlit](https://streamlit.io/) (v1.32+)
-* **Data Processing**: [Pandas](https://pandas.pydata.org/) and [NumPy](https://numpy.org/)
-* **Machine Learning**: [XGBoost](https://xgboost.readthedocs.io/) and [LightGBM](https://lightgbm.readthedocs.io/)
-* **Pre-processing**: [Scikit-Learn](https://scikit-learn.org/) (for fitted categorical label encoders)
+| Layer | Technology | Function |
+|---|---|---|
+| **UI Framework** | [Streamlit](https://streamlit.io/) | Interactive web application framework & component state engine |
+| **Machine Learning** | [XGBoost](https://xgboost.ai/), [LightGBM](https://lightgbm.readthedocs.io/) | Pre-trained Gradient Boosted Decision Tree classifiers |
+| **Categorical Preprocessing** | [scikit-learn](https://scikit-learn.org/) | Pre-fitted high-cardinality categorical LabelEncoders |
+| **Data Processing** | [pandas](https://pandas.pydata.org/), [NumPy](https://numpy.org/) | Time-block extraction, cyclical temporal features, & dataset management |
+
+---
+
+## 🏗️ System Architecture & Inference Pipeline
+
+```mermaid
+flowchart TD
+    A[Flight Selection & Date/Time Input] --> B[Embedded US Airport Database\n369 Airports Lookup]
+    B --> C[Feature Engineering Engine]
+    C --> D1["Cyclical Date Mapping (Quarter, Month, Day)"]
+    C --> D2["Departure/Arrival Time Blocks"]
+    D1 & D2 --> E[Label Encoder Transformations]
+    E --> F{Selected Model}
+    F -->|Accuracy Priority| G1[XGBoost Classifier]
+    F -->|Speed Priority| G2[LightGBM Classifier]
+    G1 & G2 --> H[Binary Outcome & Probability Score]
+    H --> I[Dynamic Boarding Pass UI Generator]
+```
+
+---
+
+## 📊 How the ML Pipeline Works
+
+1. **Temporal Feature Transformation**: Derives cyclical calendar signals (Quarter, Month, Day of Month, Day of Week) and maps departure/arrival hours into standardized FAA operational time blocks (e.g., `1600-1659`).
+2. **High-Cardinality Encoding**: Converts airport IATA codes, carrier IDs, and regional codes using pre-fitted encoders stored in `Utils/label_encoders.pkl`.
+3. **Dual-Model Inference**: Evaluates the processed feature vector through the chosen classifier, outputting:
+   - **Binary Status**: On-Time vs. Delayed ($\ge 15$ mins)
+   - **Confidence Score**: Dynamic probability distribution rendered as live progress bars.
 
 ---
 
@@ -36,32 +62,30 @@ The project uses the following libraries:
 
 ```tree
 Flight Delay Prediction/
-├── app.py                     # Streamlit application source code & styling
-├── requirements.txt           # Project python dependencies
-├── .gitignore                 # Configured git ignore file
 ├── Data/
-│   ├── cleaned_flight_delay_data.csv  # Dataset used for evaluation
-│   └── sample.xlsx            # Sample spreadsheet data
+│   ├── cleaned_flight_delay_data.csv  # Cleaned evaluation dataset
+│   └── sample.xlsx                    # Sample flight itineraries
 ├── Models/
 │   ├── flight_delay_xgboost_model.pkl # Pre-trained XGBoost classifier
 │   └── flight_delay_lgbm_model.pkl    # Pre-trained LightGBM classifier
-└── Utils/
-    └── label_encoders.pkl     # Categorical label encoders
+├── Utils/
+│   └── label_encoders.pkl             # Categorical feature encoders
+├── app.py                             # Main Streamlit UI & styling logic
+├── requirements.txt                   # Dependency manifest
+└── README.md                          # Documentation
 ```
 
 ---
 
-## 🚀 Local Installation & Quick Start
+## 🚀 Quick Start & Local Setup
 
-Follow these steps to run the application locally on your machine:
-
-### 1. Clone the Repository
+### 1. Clone Repository & Navigate
 ```bash
 git clone https://github.com/tarun05-design/SkyWise-AI.git
 cd SkyWise-AI
 ```
 
-### 2. Set Up a Virtual Environment (Recommended)
+### 2. Create Virtual Environment
 ```bash
 # Windows
 python -m venv venv
@@ -73,24 +97,21 @@ source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
-Make sure you install the required packages:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Run the Streamlit Application
-Start the Streamlit server:
+### 4. Run Application
 ```bash
 streamlit run app.py
 ```
-Your default web browser should open automatically and load the application at `http://localhost:8501`.
+Open [http://localhost:8501](http://localhost:8501) in your browser.
 
 ---
 
-## 📊 How It Works (Machine Learning)
+## 👤 Author & Connect
 
-1. **Feature Engineering**: Derives cyclical calendar features (Quarter, Month, Day of Month, Day of Week) from the flight date. Scheduled departure and arrival times are mapped to standard department time blocks (e.g., `1600-1659`).
-2. **Label Encoding**: Uses pre-fitted label encoders stored in `Utils/label_encoders.pkl` to convert high-cardinality categories (Airports, Airlines) into model-ready integers.
-3. **Prediction Engine**: Runs the features through the selected Gradient Boosted Classifier (XGBoost or LightGBM) to compute:
-   - Binary delay outcome (On-Time vs. Delayed $\ge 15$ mins)
-   - Probability score for both outcomes (rendered as dynamic progress bars).
+**Tarun P** — Machine Learning & Full Stack Developer
+- 🌐 Portfolio: [tarun-portfolio.vercel.app](https://tarun-portfolio.vercel.app)
+- 🐙 GitHub: [@tarun05-design](https://github.com/tarun05-design)
+- 📧 Email: [tarunparthasarathy65@gmail.com](mailto:tarunparthasarathy65@gmail.com)
