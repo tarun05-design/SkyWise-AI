@@ -34,16 +34,18 @@ SkyWise AI is a premium Streamlit web application designed to forecast whether a
 
 ```mermaid
 flowchart TD
-    A[Flight Selection & Date/Time Input] --> B[Embedded US Airport Database\n369 Airports Lookup]
-    B --> C[Feature Engineering Engine]
+    A["Flight Selection & Date/Time Input"] --> B["Embedded US Airport Database<br/>369 Airports Lookup"]
+    B --> C["Feature Engineering Engine"]
     C --> D1["Cyclical Date Mapping (Quarter, Month, Day)"]
     C --> D2["Departure/Arrival Time Blocks"]
-    D1 & D2 --> E[Label Encoder Transformations]
-    E --> F{Selected Model}
-    F -->|Accuracy Priority| G1[XGBoost Classifier]
-    F -->|Speed Priority| G2[LightGBM Classifier]
-    G1 & G2 --> H[Binary Outcome & Probability Score]
-    H --> I[Dynamic Boarding Pass UI Generator]
+    D1 --> E["Label Encoder Transformations"]
+    D2 --> E
+    E --> F{"Selected Model"}
+    F -->|Accuracy Priority| G1["XGBoost Classifier"]
+    F -->|Speed Priority| G2["LightGBM Classifier"]
+    G1 --> H["Binary Outcome & Probability Score"]
+    G2 --> H
+    H --> I["Dynamic Boarding Pass UI Generator"]
 ```
 
 ---
