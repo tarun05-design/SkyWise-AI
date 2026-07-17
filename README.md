@@ -4,7 +4,7 @@ Forecast flight arrival delays (≥15 mins) from airline operational data and te
 
 SkyWise AI is a premium Streamlit web application designed to forecast whether a flight will experience an arrival delay. Styled with a dark-mode glassmorphic interface inspired by airline boarding passes, SkyWise AI combines machine learning predictions (XGBoost & LightGBM) with an embedded 369 US airport database and interactive ticket micro-animations.
 
-[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-skywise--ai.streamlit.app-46E3B7?style=for-the-badge&logo=streamlit&logoColor=black)](https://skywise-ai.streamlit.app/)
+[![Live Demo](https://img.shields.io/badge/%20Live%20Demo-skywise--ai.streamlit.app-46E3B7?style=for-the-badge&logo=streamlit&logoColor=black)](https://skywise-ai.streamlit.app/)
 
 ![python](https://img.shields.io/badge/python-3.9+-blue?style=flat) ![streamlit](https://img.shields.io/badge/streamlit-1.32+-red?style=flat) ![model](https://img.shields.io/badge/model-xgboost%20%7C%20lightgbm-orange?style=flat) ![license](https://img.shields.io/badge/license-MIT-green?style=flat)
 
